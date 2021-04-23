@@ -16,3 +16,5 @@ node_modules
 # TypeScript Sources
 **/store/**/*.js
 **/store/**/*.d.ts
+**/utils/**/*.js
+**/utils/**/*.d.ts

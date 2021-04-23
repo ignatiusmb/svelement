@@ -13,7 +13,7 @@
     "check": "prettier -c src",
     "format": "prettier -w src",
     "build": "run-p build:**",
-    "build:tsc": "tsc -d",
+    "build:tsc": "tsc -d && prettier -wu src/{store,utils}/**/*.{d.ts,js}",
     "build:icons": "node src/icons/build.mjs",
     "prepublishOnly": "npm run build && mv src/* .",
     "reset": "git reset --hard && git clean -dfx -e node_modules"
@@ -31,6 +31,9 @@
     },
     "./store": {
       "import": "./store/index.js"
+    },
+    "./utils": {
+      "import": "./utils/index.js"
     },
     "./package.json": "./package.json"
   },
