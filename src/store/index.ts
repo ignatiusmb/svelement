@@ -13,35 +13,39 @@ export function fetcher(url: RequestInfo) {
 	return load(), store;
 }
 
-export function storage<T>(
+export function storage(
 	key: string,
-	value: T,
+	value: any,
 	type: 'local' | 'session' = 'local'
-): Writable<T> {
+): Writable<any> {
 	const getStorage =
 		type === 'local'
 			? () => typeof localStorage !== 'undefined' && localStorage
 			: () => typeof sessionStorage !== 'undefined' && sessionStorage;
 
-	const ss = getStorage();
+	const storage = getStorage();
 	const initial = writable(value);
-	const updateStorage = (key: string, value: T) => {
-		const ss = getStorage();
-		if (ss) ss.setItem(key, JSON.stringify(value));
-	};
 
-	if (ss && ss[key]) initial.set(JSON.parse(ss[key]));
+	if (storage && storage[key]) {
+		initial.set(JSON.parse(storage[key]));
+	}
 
 	return {
 		subscribe: initial.subscribe,
 		set(value) {
 			initial.set(value);
-			updateStorage(key, value);
+			if (storage) {
+				const encoded = JSON.stringify(value);
+				storage.setItem(key, encoded);
+			}
 		},
 		update(updater) {
 			const value = updater(get(initial));
 			initial.set(value);
-			updateStorage(key, value);
+			if (storage) {
+				const encoded = JSON.stringify(value);
+				storage.setItem(key, encoded);
+			}
 		},
 	};
 }
